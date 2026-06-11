@@ -22,7 +22,7 @@ function Generate() {
   const[loading, setLoading]=useState(false);
 
   const[aspectRatio,setAspectRatio]=useState<AspectRatio>('16:9')
-  const[colorSchemeId,SetColorSchemeId]=useState<string>('colorSchemes[0].id')
+  const[colorSchemeId,SetColorSchemeId]=useState<string>(colorSchemes[0].id)
   const[style,setStyle]=useState<ThumbnailStyle>('Bold & Graphic')
   const[styleDropdownOpen,setStyleDropdownOpen]=useState(false);
 
