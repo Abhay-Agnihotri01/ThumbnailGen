@@ -44,11 +44,17 @@ app.use(cors({
 
 
 app.use(express.json());
+app.set("trust proxy", 1); // Enable trust proxy for Vercel
+
 app.use(session({
     secret: process.env.SESSION_SECRET || 'default-secret',
     resave: false,
     saveUninitialized: false,
-    cookie: {maxAge: 1000 * 60 * 60 * 24 * 7}, // 7 day
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 day
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    },
     store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URL as string,
         collectionName: 'sessions'
