@@ -21,11 +21,24 @@ const app = express();
 // Middleware
 const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000'];
 if (process.env.FRONTEND_URL) {
-    allowedOrigins.push(process.env.FRONTEND_URL);
+    // Remove trailing slash if user accidentally added it in Vercel
+    const cleanUrl = process.env.FRONTEND_URL.endsWith('/') 
+        ? process.env.FRONTEND_URL.slice(0, -1) 
+        : process.env.FRONTEND_URL;
+    allowedOrigins.push(cleanUrl);
 }
 
 app.use(cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('vercel.app')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 
